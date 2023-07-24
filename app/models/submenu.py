@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy import Column, ForeignKey, String, func, select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import MapperProperty, column_property, relationship
@@ -7,6 +9,13 @@ from app.models.dish import Dish
 
 
 class Submenu(Base):
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        nullable=False,
+        unique=True,
+        default=uuid.uuid4,
+    )
     title = Column(String(100), nullable=False)
     description = Column(String(200), nullable=False)
     menu_id = Column(UUID(as_uuid=True), ForeignKey("menu.id"))

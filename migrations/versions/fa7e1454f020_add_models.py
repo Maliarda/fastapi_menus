@@ -1,16 +1,17 @@
 """Add models
 
-Revision ID: 2e74b4e67255
+Revision ID: fa7e1454f020
 Revises: 
-Create Date: 2023-07-24 20:30:41.308526
+Create Date: 2023-07-25 02:18:51.412175
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
+
 # revision identifiers, used by Alembic.
-revision = '2e74b4e67255'
+revision = 'fa7e1454f020'
 down_revision = None
 branch_labels = None
 depends_on = None
