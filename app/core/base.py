@@ -1,2 +1,5 @@
 """Импорты класса Base и всех моделей для Alembic."""
-from app.core.db import Base
+from app.core.db import Base  # noqa
+from app.models.dish import Dish  # noqa
+from app.models.submenu import Submenu  # noqa
+from app.models.menu import Menu  # noqa
