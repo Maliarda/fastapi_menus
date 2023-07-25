@@ -19,7 +19,7 @@ cd fastapi_menus
 Возможно с помощью [PGAdmin](https://info-comp.ru/install-pgadmin-4-on-windows-10#nastroyka-podklyucheniya-k-postgresql) или DBeaver
 
 
-### В корневом каталоге проекта создать файл с именем .env, в который добавить следующие переменные:
+### В корневом каталоге проекта создать файл с именем .env, в который добавить следующие переменные (см. example_env):
 
 > DATABASE_URL=postgresql+asyncpg://user:password@host:port/db_name
 
@@ -63,3 +63,5 @@ alembic upgrade head
 ```
 uvicorn app.main:app 
 ```
+### Документация доступна по адресам:
+[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
