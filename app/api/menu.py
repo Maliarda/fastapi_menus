@@ -45,15 +45,12 @@ async def get_menu(
 @router.post(
     "/",
     response_model=Menu,
-    summary="Create a new menu",
     status_code=status.HTTP_201_CREATED,
 )
 async def create_menu(
     menu: MenuCreateUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    """Create a Menu-record in database.
-    Specify the title and the description to set."""
     return await create_new_menu(menu, session)
 
 
@@ -67,9 +64,6 @@ async def update_menu(
     menu: MenuCreateUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    """Update a Menu-record in database.
-    Specify the ID of the menu to be updated,
-    it's new 'title' and 'description'."""
     return await update_menu_by_id(menu_id, menu, session)
 
 
