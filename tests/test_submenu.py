@@ -37,7 +37,8 @@ async def test_get_submenu(client: AsyncClient, submenu: SubmenuFactory):
 async def test_create_submenu(client: AsyncClient, menu: MenuFactory):
     submenu_data = {"title": "Test Submenu", "description": "Test Description"}
     response = await client.post(
-        f"/api/v1/menus/{menu.id}/submenus/", json=submenu_data,
+        f"/api/v1/menus/{menu.id}/submenus/",
+        json=submenu_data,
     )
     assert response.status_code == status.HTTP_201_CREATED
     created_submenu = response.json()
@@ -69,7 +70,6 @@ async def test_update_submenu(
     response_after_update = await client.get(
         f"/api/v1/menus/{submenu.menu_id}/submenus/{submenu.id}",
     )
-    print(response_after_update.text)
     assert response_after_update.status_code == status.HTTP_200_OK
     assert update_data.items() <= response_after_update.json().items()
 

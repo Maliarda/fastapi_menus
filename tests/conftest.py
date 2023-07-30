@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.core.db import Base, get_async_session
 from app.main import app
 
+
 test_engine = create_async_engine(
     settings.postgres_url_test,
     future=True,
@@ -65,8 +66,23 @@ async def submenu():
 
 
 @pytest.fixture(scope="function")
-async def dish():
+async def dish_and_menu():
     menu = await factories.MenuFactory.create()
     submenu = await factories.SubmenuFactory.create(menu_id=menu.id)
     dish = await factories.DishFactory.create(submenu_id=submenu.id)
-    yield dish
+    yield dish, menu
+
+
+@pytest.fixture(scope="function")
+async def two_dishes():
+    menu = await factories.MenuFactory.create()
+    submenu = await factories.SubmenuFactory.create(menu_id=menu.id)
+    first_dish = await factories.DishFactory.create(submenu_id=submenu.id)
+    second_dish = await factories.DishFactory.create(
+        submenu_id=submenu.id,
+        id="2e1ce371-cd16-4231-bc5e-4fac25e314f2",
+        title="Napoleon cake",
+        description="Eat like an emperor",
+        price="2.56",
+    )
+    yield first_dish, second_dish, menu

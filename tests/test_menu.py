@@ -8,7 +8,7 @@ from factories import MenuFactory
 
 
 @pytest.mark.anyio
-async def test_menus_list(client: AsyncClient, menu: MenuFactory, ):
+async def test_menus_list(client: AsyncClient, menu: MenuFactory):
 
     response = await client.get("/api/v1/menus/")
     assert response.json() == [
@@ -18,7 +18,7 @@ async def test_menus_list(client: AsyncClient, menu: MenuFactory, ):
             "description": menu.description,
             "submenus_count": 0,
             "dishes_count": 0,
-        }
+        },
     ]
     assert response.status_code == status.HTTP_200_OK
 
@@ -28,7 +28,7 @@ async def test_create_menu(client: AsyncClient):
     menu_data = {"title": "Test Menu", "description": "Test Description"}
     url = app.url_path_for("create_menu")
     response = await client.post(
-        url, json=menu_data, )
+        url, json=menu_data)
     assert response.status_code == status.HTTP_201_CREATED
     created_menu = response.json()
     assert "id" in created_menu
@@ -37,7 +37,7 @@ async def test_create_menu(client: AsyncClient):
 
 
 @pytest.mark.anyio
-async def test_get_menu(client: AsyncClient, menu: MenuFactory, ):
+async def test_get_menu(client: AsyncClient, menu: MenuFactory):
     response = await client.get(f"/api/v1/menus/{menu.id}")
     current_menu = response.json()
     assert response.status_code == status.HTTP_200_OK
@@ -49,7 +49,7 @@ async def test_get_menu(client: AsyncClient, menu: MenuFactory, ):
 
 
 @pytest.mark.anyio
-async def test_delete_menu(client: AsyncClient, menu: MenuFactory, ):
+async def test_delete_menu(client: AsyncClient, menu: MenuFactory):
     response = await client.delete(f"/api/v1/menus/{menu.id}")
     assert response.json() is True
     assert response.status_code == status.HTTP_200_OK
@@ -62,7 +62,7 @@ async def test_delete_menu(client: AsyncClient, menu: MenuFactory, ):
 
 
 @pytest.mark.anyio
-async def test_update_menu(client: AsyncClient, menu: MenuFactory, ):
+async def test_update_menu(client: AsyncClient, menu: MenuFactory):
     update_data = {
         "title": "Updated menu",
         "description": "Updated description",

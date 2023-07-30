@@ -1,9 +1,9 @@
-from factories.utils import AsyncFactory
+import factory
+
+from app.models.dish import Dish
 from app.models.menu import Menu
 from app.models.submenu import Submenu
-from app.models.dish import Dish
-
-import factory
+from factories.utils import AsyncFactory
 
 
 class MenuFactory(AsyncFactory):
@@ -25,13 +25,12 @@ class SubmenuFactory(AsyncFactory):
     menu_id = factory.SubFactory(MenuFactory).get_factory().id
 
 
-class DishFactory(factory.Factory):
+class DishFactory(AsyncFactory):
     class Meta:
         model = Dish
 
     id = "6fa89a0b-2ae0-4ab0-a39e-f2eaceab367f"
-    title = factory.Sequence(lambda n: f"Dish {n}")
-    description = "Description for Dish"
-    price = factory.Faker("pydecimal", right_digits=2)
+    title = "Red Velvet"
+    description = "Devilish dessert"
+    price = "2.56"
     submenu_id = factory.SubFactory(SubmenuFactory).get_factory().id
-    menu_id = factory.SubFactory(MenuFactory).get_factory().id
