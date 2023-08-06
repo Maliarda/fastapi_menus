@@ -1,79 +1,84 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.core.db import get_async_session
-from app.crud.menu_crud import (
-    create_new_menu,
-    delete_menu_by_id,
-    get_menu_by_id,
-    get_menus_list,
-    update_menu_by_id,
-)
 from app.schemas.menu_schemas import Menu, MenuCreateUpdate
+from app.services.menu_service import MenuService
 
 
-router = APIRouter(tags=["Menu"], prefix="/api/v1/menus")
+router = APIRouter(tags=['Menu'], prefix='/api/v1/menus')
 
 
 @router.get(
-    "/",
+    '/',
     response_model=list[Menu],
     response_model_exclude_none=True,
     status_code=status.HTTP_200_OK,
 )
 async def get_list_menus(
-    session: AsyncSession = Depends(get_async_session),
+    menu_service: MenuService = Depends(MenuService),
 ):
-    all_menus = await get_menus_list(session)
-    return all_menus
+    return await menu_service.get_all_menus()
 
 
 @router.get(
-    "/{menu_id}",
+    '/{menu_id}',
     response_model=Menu,
     status_code=status.HTTP_200_OK,
 )
 async def get_menu(
     menu_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    menu_service: MenuService = Depends(MenuService),
 ):
-    return await get_menu_by_id(menu_id, session)
+    menu = await menu_service.get_menu(menu_id)
+    if not menu:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='menu not found',
+        )
+
+    return menu
 
 
 @router.post(
-    "/",
+    '/',
     response_model=Menu,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_menu(
     menu: MenuCreateUpdate,
-    session: AsyncSession = Depends(get_async_session),
+    menu_service: MenuService = Depends(MenuService),
 ):
-    return await create_new_menu(menu, session)
+    new_menu = await menu_service.create_menu(menu)
+
+    if not new_menu:
+        raise HTTPException(status_code=400, detail='menu already exists')
+    return new_menu
 
 
 @router.patch(
-    "/{menu_id}",
+    '/{menu_id}',
     response_model=Menu,
     status_code=status.HTTP_200_OK,
 )
 async def update_menu(
     menu_id: UUID,
     menu: MenuCreateUpdate,
-    session: AsyncSession = Depends(get_async_session),
+    menu_service: MenuService = Depends(MenuService),
 ):
-    return await update_menu_by_id(menu_id, menu, session)
+    return await menu_service.update_menu(menu_id, menu)
 
 
 @router.delete(
-    "/{menu_id}",
+    '/{menu_id}',
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
 async def delete_menu(
     menu_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    menu_service: MenuService = Depends(MenuService),
 ):
-    return await delete_menu_by_id(menu_id, session)
+    del_menu = await menu_service.delete_menu(menu_id)
+    if not del_menu:
+        return None
+    return {'status': True, 'message': 'The menu successfully deleted'}

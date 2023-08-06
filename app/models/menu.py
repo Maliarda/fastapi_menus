@@ -20,9 +20,9 @@ class Menu(Base):
     title = Column(String(100), nullable=False)
     description = Column(String(200), nullable=False)
     submenu = relationship(
-        "Submenu",
-        back_populates="menu",
-        cascade="all, delete",
+        'Submenu',
+        back_populates='menu',
+        cascade='all, delete',
     )
     submenus_count: MapperProperty = column_property(
         select(func.count(Submenu.id))

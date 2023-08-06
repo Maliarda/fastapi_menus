@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.dish_schemas import Dish, DishCreateUpdate
-from app.services.dish_services import DishService
+from app.services.dish_service import DishService
 
 
 router = APIRouter(
@@ -34,14 +34,14 @@ async def get_dish(
     dish_id: UUID,
     dish_service: DishService = Depends(DishService),
 ):
-    res = await dish_service.get_dish(dish_id)
+    dish = await dish_service.get_dish(dish_id)
 
-    if not res:
+    if not dish:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='dish not found',
         )
-    return res
+    return dish
 
 
 @router.post(

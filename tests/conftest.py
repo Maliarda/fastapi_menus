@@ -26,9 +26,9 @@ TestingSessionLocal = sessionmaker(
 )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='session')
 def anyio_backend():
-    return "asyncio"
+    return 'asyncio'
 
 
 async def override_db():
@@ -36,7 +36,7 @@ async def override_db():
         yield session
 
 
-@pytest.fixture(autouse=True, scope="function")
+@pytest.fixture(autouse=True, scope='function')
 async def init_db():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -48,24 +48,24 @@ async def init_db():
 @pytest.fixture
 async def client():
     app.dependency_overrides = {get_async_session: override_db}
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 async def menu():
     menu = await factories.MenuFactory.create()
     yield menu
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 async def submenu():
     menu = await factories.MenuFactory.create()
     submenu = await factories.SubmenuFactory.create(menu_id=menu.id)
     yield submenu
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 async def dish_and_menu():
     menu = await factories.MenuFactory.create()
     submenu = await factories.SubmenuFactory.create(menu_id=menu.id)
@@ -73,16 +73,16 @@ async def dish_and_menu():
     yield dish, menu
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 async def two_dishes():
     menu = await factories.MenuFactory.create()
     submenu = await factories.SubmenuFactory.create(menu_id=menu.id)
     first_dish = await factories.DishFactory.create(submenu_id=submenu.id)
     second_dish = await factories.DishFactory.create(
         submenu_id=submenu.id,
-        id="2e1ce371-cd16-4231-bc5e-4fac25e314f2",
-        title="Napoleon cake",
-        description="Eat like an emperor",
-        price="2.56",
+        id='2e1ce371-cd16-4231-bc5e-4fac25e314f2',
+        title='Napoleon cake',
+        description='Eat like an emperor',
+        price='2.56',
     )
     yield first_dish, second_dish, menu

@@ -32,13 +32,14 @@ class MenuRepository:
 
     async def get_menus(self):
         """Get menus list."""
-        return (await self.db.execute(select(self.model))).scalars().all()
+        return (await self.session.execute(select(self.model))).scalars().all()
 
     async def create_menu(self, menu: MenuCreateUpdate):
         """Create a new menu."""
         new_menu = self.model(**menu.dict())
         self.session.add(new_menu)
         await self.session.commit()
+        await self.session.refresh(new_menu)
         return new_menu
 
     async def delete_menu(self, menu_id: UUID):
@@ -50,13 +51,12 @@ class MenuRepository:
             return True
         return False
 
-    async def update_menu(self, menu_id: UUID):
+    async def update_menu(self, menu_id: UUID, menu: MenuCreateUpdate):
         """Update menu item"""
         upd_menu = await self.get_menu_by_id(menu_id=menu_id)
-        upd_menu_data = self.model.dict(exclude_unset=True)
+        upd_menu_data = menu.dict(exclude_unset=True)
         for k, v in upd_menu_data.items():
             setattr(upd_menu, k, v)
         await self.session.commit()
         await self.session.refresh(upd_menu)
-        await self.session.commit()
         return upd_menu

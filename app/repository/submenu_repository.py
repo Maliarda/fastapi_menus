@@ -52,6 +52,7 @@ class SubmenuRepository:
         new_submenu.menu_id = menu_id
         self.session.add(new_submenu)
         await self.session.commit()
+        await self.session.refresh(new_submenu)
         return new_submenu
 
     async def delete_submenu(self, submenu_id: UUID):
@@ -63,13 +64,16 @@ class SubmenuRepository:
             return True
         return False
 
-    async def update_submenu(self, submenu_id: UUID):
+    async def update_submenu(
+        self,
+        submenu_id: UUID,
+        submenu: SubmenuCreateUpdate,
+    ):
         """Update submenu."""
         upd_submenu = await self.get_submenu_by_id(submenu_id=submenu_id)
-        upd_submenu_data = self.model.dict(exclude_unset=True)
+        upd_submenu_data = submenu.dict(exclude_unset=True)
         for k, v in upd_submenu_data.items():
             setattr(upd_submenu, k, v)
         await self.session.commit()
         await self.session.refresh(upd_submenu)
-        await self.session.commit()
         return upd_submenu

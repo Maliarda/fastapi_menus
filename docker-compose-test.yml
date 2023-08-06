@@ -35,5 +35,3 @@ services:
 volumes:
   test_db:
     name: test_db
-
-

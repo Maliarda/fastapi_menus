@@ -99,7 +99,10 @@ async def test_delete_dish(
     response = await client.delete(
         f'/api/v1/menus/{menu.id}/submenus/{dish.submenu_id}/dishes/{dish.id}',
     )
-    assert response.json() == {'message': 'The dish successfully deleted', 'status': True}
+    assert response.json() == {
+        'message': 'The dish successfully deleted',
+        'status': True,
+    }
     assert response.status_code == status.HTTP_200_OK
     response_after_del = await client.get(
         f'/api/v1/menus/{menu.id}/submenus/{dish.submenu_id}/dishes/{dish.id}',
@@ -122,7 +125,10 @@ async def test_delete_submenu_with_dish(
     response = await client.delete(
         f'/api/v1/menus/{menu.id}/submenus/{dish.submenu_id}',
     )
-    assert response.json() is True
+    assert response.json() == {
+        'message': 'The submenu successfully deleted',
+        'status': True,
+    }
     assert response.status_code == status.HTTP_200_OK
     response_after_del = await client.get(
         f'/api/v1/menus/{menu.id}/submenus/{dish.submenu_id}/dishes/{dish.id}',

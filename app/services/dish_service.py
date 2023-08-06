@@ -48,9 +48,7 @@ class DishService:
             return None
 
     async def delete_dish(self, dish_id: UUID):
-        db_dish = await self.dish_repository.delete_dish(
-            dish_id=dish_id
-        )
+        db_dish = await self.dish_repository.delete_dish(dish_id=dish_id)
         if db_dish is None:
             return None
         return {'status': True, 'message': 'The dish successfully deleted'}

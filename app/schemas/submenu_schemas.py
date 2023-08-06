@@ -12,11 +12,11 @@ class Submenu(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": {
-                "id": "c1dd2867-1ed1-4839-a49b-de9cc9ac62b1 ",
-                "title": "Cakes",
-                "description": "Cakes description",
-                "dishes_count": 20,
+            'example': {
+                'id': 'c1dd2867-1ed1-4839-a49b-de9cc9ac62b1 ',
+                'title': 'Cakes',
+                'description': 'Cakes description',
+                'dishes_count': 20,
             },
         }
 
@@ -28,8 +28,8 @@ class SubmenuCreateUpdate(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": {
-                "title": "Cakes",
-                "description": "heavenly pleasure",
+            'example': {
+                'title': 'Cakes',
+                'description': 'heavenly pleasure',
             },
         }

@@ -1,84 +1,86 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.core.db import get_async_session
-from app.crud.submenu_crud import (
-    create_new_submenu,
-    delete_submenu_by_id,
-    get_submenu_by_id,
-    get_submenus_list,
-    update_submenu_by_id,
-)
 from app.schemas.submenu_schemas import Submenu, SubmenuCreateUpdate
+from app.services.submenu_service import SubmenuService
 
 
 router = APIRouter(
-    tags=["Submenu"],
-    prefix="/api/v1/menus/{menu_id}/submenus",
+    tags=['Submenu'],
+    prefix='/api/v1/menus/{menu_id}/submenus',
 )
 
 
 @router.get(
-    "/",
+    '/',
     response_model=list[Submenu],
     response_model_exclude_none=True,
     status_code=status.HTTP_200_OK,
 )
 async def get_list_submenus(
     menu_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    submenu_service: SubmenuService = Depends(SubmenuService),
 ):
-    all_menus = await get_submenus_list(menu_id, session)
-    return all_menus
+    return await submenu_service.get_all_submenus(menu_id)
 
 
 @router.get(
-    "/{submenu_id}",
+    '/{submenu_id}',
     response_model=Submenu,
     status_code=status.HTTP_200_OK,
 )
 async def get_submenu(
     submenu_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    submenu_service: SubmenuService = Depends(SubmenuService),
 ):
-    return await get_submenu_by_id(submenu_id, session)
+    submenu = await submenu_service.get_submenu(submenu_id)
+
+    if not submenu:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='submenu not found',
+        )
+    return submenu
 
 
 @router.post(
-    "/",
+    '/',
     response_model=Submenu,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_submenu(
     menu_id: UUID,
     submenu: SubmenuCreateUpdate,
-    session: AsyncSession = Depends(get_async_session),
+    submenu_service: SubmenuService = Depends(SubmenuService),
 ):
-    return await create_new_submenu(menu_id, submenu, session)
+    return await submenu_service.create_submenu(menu_id, submenu)
 
 
 @router.patch(
-    "/{submenu_id}",
+    '/{submenu_id}',
     response_model=Submenu,
     status_code=status.HTTP_200_OK,
 )
 async def update_submenu(
     submenu_id: UUID,
     submenu: SubmenuCreateUpdate,
-    session: AsyncSession = Depends(get_async_session),
+    submenu_service: SubmenuService = Depends(SubmenuService),
 ):
-    return await update_submenu_by_id(submenu_id, submenu, session)
+    return await submenu_service.update_submenu(submenu_id, submenu)
 
 
 @router.delete(
-    "/{submenu_id}",
+    '/{submenu_id}',
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
 async def delete_submenu(
     submenu_id: UUID,
-    session: AsyncSession = Depends(get_async_session),
+    submenu_service: SubmenuService = Depends(SubmenuService),
 ):
-    return await delete_submenu_by_id(submenu_id, session)
+    del_submenu = await submenu_service.delete_submenu(submenu_id)
+
+    if not del_submenu:
+        return None
+    return {'status': True, 'message': 'The submenu successfully deleted'}

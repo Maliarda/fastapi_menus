@@ -1,9 +1,9 @@
 import inspect
 
 import factory
-
 from factory.builder import BuildStep, StepBuilder, parse_declarations
-from tests.conftest import TestingSessionLocal
+
+from tests.conftest import TestingSessionLocal  # noqa
 
 
 class AsyncFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -15,7 +15,7 @@ class AsyncFactory(factory.alchemy.SQLAlchemyModelFactory):
     async def _generate(cls, strategy, params):
         if cls._meta.abstract:
             raise factory.errors.FactoryError(
-                "Cannot generate instances of abstract factory %(f)s",
+                'Cannot generate instances of abstract factory %(f)s',
             )
 
         step = AsyncStepBuilder(cls._meta, params, strategy)
