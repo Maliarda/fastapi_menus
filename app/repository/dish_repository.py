@@ -14,7 +14,7 @@ class DishRepository:
         self.session = session
         self.model = Dish
 
-    async def get_dish_by_id(self, dish_id: UUID) -> Dish:
+    async def get_dish_by_id(self, dish_id: UUID) -> Dish | None:
         """Get dish by id."""
         return (
             await self.session.execute(
@@ -22,23 +22,23 @@ class DishRepository:
             )
         ).scalar()
 
-    async def get_dish_by_title(self, dish_title: str) -> Dish:
-        """Get dish by title."""
-        return (
-            await self.session.execute(
-                select(self.model).where(self.model.title == dish_title),
-            )
-        ).scalar()
+    # async def get_dish_by_title(self, dish_title: str) -> Dish:
+    #     """Get dish by title."""
+    #     return (
+    #         await self.session.execute(
+    #             select(self.model).where(self.model.title == dish_title),
+    #         )
+    #     ).scalar()
 
     async def get_list_dishes(
-        self, submenu_id: UUID,
+            self, submenu_id: UUID,
     ) -> list[Dish] | None:
         """Get dishes list."""
         return (
             (
                 await self.session.execute(
                     select(self.model)
-                    .where(self.model.submenu_id == submenu_id),
+                    .where(self.model.submenu_id == submenu_id)
                 )
             )
             .scalars()
@@ -46,13 +46,13 @@ class DishRepository:
         )
 
     async def create_dish(
-        self,
-        dish: DishCreateUpdate,
-        menu_id: UUID,
-        submenu_id: UUID,
+            self,
+            dish: DishCreateUpdate,
+            menu_id: UUID,
+            submenu_id: UUID,
     ) -> Dish:
         """Create a new dish."""
-        new_dish = self.model(**dish.dict())
+        new_dish = self.model(title=dish.title, description=dish.description, price=dish.price)
         new_dish.menu_id = menu_id
         new_dish.submenu_id = submenu_id
         self.session.add(new_dish)

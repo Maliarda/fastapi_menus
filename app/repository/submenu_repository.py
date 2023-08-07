@@ -22,13 +22,13 @@ class SubmenuRepository:
             )
         ).scalar()
 
-    async def get_submenu_by_title(self, submenu_title: UUID):
-        """Get submenu by title."""
-        return (
-            await self.session.execute(
-                select(self.model).where(self.model.title == submenu_title),
-            )
-        ).scalar()
+    # async def get_submenu_by_title(self, submenu_title: UUID):
+    #     """Get submenu by title."""
+    #     return (
+    #         await self.session.execute(
+    #             select(self.model).where(self.model.title == submenu_title),
+    #         )
+    #     ).scalar()
 
     async def get_submenus(self, menu_id: UUID):
         """Get submenus list."""
@@ -43,13 +43,12 @@ class SubmenuRepository:
         )
 
     async def create_submenu(
-        self,
-        submenu: SubmenuCreateUpdate,
-        menu_id: UUID,
+            self,
+            submenu: SubmenuCreateUpdate,
+            menu_id: UUID,
     ):
         """Create a new submenu."""
-        new_submenu = self.model(**submenu.dict())
-        new_submenu.menu_id = menu_id
+        new_submenu = Submenu(title=submenu.title, description=submenu.description, menu_id=menu_id)
         self.session.add(new_submenu)
         await self.session.commit()
         await self.session.refresh(new_submenu)
@@ -65,9 +64,9 @@ class SubmenuRepository:
         return False
 
     async def update_submenu(
-        self,
-        submenu_id: UUID,
-        submenu: SubmenuCreateUpdate,
+            self,
+            submenu_id: UUID,
+            submenu: SubmenuCreateUpdate,
     ):
         """Update submenu."""
         upd_submenu = await self.get_submenu_by_id(submenu_id=submenu_id)

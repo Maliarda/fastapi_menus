@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.dish_schemas import Dish, DishCreateUpdate
 from app.services.dish_service import DishService
+from dependencies import get_dish_service
 
 
 router = APIRouter(
@@ -19,10 +20,10 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def get_list_dishes(
-    submenu_id: UUID,
-    dish_service: DishService = Depends(DishService),
+        submenu_id: UUID,
+        dish_service: DishService = Depends(get_dish_service),
 ):
-    return await dish_service.get_all_dishes(submenu_id)
+    return await dish_service.get_all_dishes(submenu_id=submenu_id)
 
 
 @router.get(
@@ -31,10 +32,10 @@ async def get_list_dishes(
     status_code=status.HTTP_200_OK,
 )
 async def get_dish(
-    dish_id: UUID,
-    dish_service: DishService = Depends(DishService),
+        dish_id: UUID,
+        dish_service: DishService = Depends(get_dish_service),
 ):
-    dish = await dish_service.get_dish(dish_id)
+    dish = await dish_service.get_dish(dish_id=dish_id)
 
     if not dish:
         raise HTTPException(
@@ -50,12 +51,13 @@ async def get_dish(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_dish(
-    menu_id: UUID,
-    submenu_id: UUID,
-    dish: DishCreateUpdate,
-    dish_service: DishService = Depends(DishService),
+        menu_id: UUID,
+        submenu_id: UUID,
+        dish: DishCreateUpdate,
+        dish_service: DishService = Depends(get_dish_service),
 ):
-    return await dish_service.create_dish(menu_id, submenu_id, dish)
+    new_dish = await dish_service.create_dish(menu_id, submenu_id, dish)
+    return new_dish
 
 
 @router.patch(
@@ -64,11 +66,12 @@ async def create_dish(
     status_code=status.HTTP_200_OK,
 )
 async def update_dish(
-    dish_id: UUID,
-    dish: DishCreateUpdate,
-    dish_service: DishService = Depends(DishService),
+        dish_id: UUID,
+        dish: DishCreateUpdate,
+        dish_service: DishService = Depends(get_dish_service),
 ):
-    return await dish_service.update_dish(dish_id, dish)
+    upd_dish = await dish_service.update_dish(dish_id, dish)
+    return upd_dish
 
 
 @router.delete(
@@ -76,11 +79,15 @@ async def update_dish(
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
-async def delete_submenu(
-    dish_id: UUID,
-    dish_service: DishService = Depends(DishService),
+async def delete_dish(
+        menu_id: UUID,
+        submenu_id: UUID,
+        dish_id: UUID,
+        dish_service: DishService = Depends(get_dish_service),
 ):
-    dish = await dish_service.delete_dish(dish_id)
+    dish = await dish_service.delete_dish(menu_id=menu_id,
+                                          submenu_id=submenu_id,
+                                          dish_id=dish_id)
     if not dish:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

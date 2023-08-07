@@ -33,6 +33,19 @@ services:
     volumes:
       - menus_db:/var/lib/postgresql/data
 
+  cache:
+    container_name: cache
+    image: redis:latest
+    env_file:
+      - .docker.env
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 volumes:
     menus_db:
       name: menus_db

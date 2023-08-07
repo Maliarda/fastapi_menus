@@ -36,7 +36,7 @@ class MenuRepository:
 
     async def create_menu(self, menu: MenuCreateUpdate):
         """Create a new menu."""
-        new_menu = self.model(**menu.dict())
+        new_menu = self.model(title=menu.title, description=menu.description)
         self.session.add(new_menu)
         await self.session.commit()
         await self.session.refresh(new_menu)

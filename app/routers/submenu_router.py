@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.schemas.submenu_schemas import Submenu, SubmenuCreateUpdate
 from app.services.submenu_service import SubmenuService
+from dependencies import get_submenu_service
 
 
 router = APIRouter(
@@ -20,7 +21,7 @@ router = APIRouter(
 )
 async def get_list_submenus(
     menu_id: UUID,
-    submenu_service: SubmenuService = Depends(SubmenuService),
+    submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
     return await submenu_service.get_all_submenus(menu_id)
 
@@ -32,7 +33,7 @@ async def get_list_submenus(
 )
 async def get_submenu(
     submenu_id: UUID,
-    submenu_service: SubmenuService = Depends(SubmenuService),
+    submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
     submenu = await submenu_service.get_submenu(submenu_id)
 
@@ -52,9 +53,10 @@ async def get_submenu(
 async def create_submenu(
     menu_id: UUID,
     submenu: SubmenuCreateUpdate,
-    submenu_service: SubmenuService = Depends(SubmenuService),
+    submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
-    return await submenu_service.create_submenu(menu_id, submenu)
+    new_submenu = await submenu_service.create_submenu(menu_id=menu_id, submenu=submenu)
+    return new_submenu
 
 
 @router.patch(
@@ -65,9 +67,10 @@ async def create_submenu(
 async def update_submenu(
     submenu_id: UUID,
     submenu: SubmenuCreateUpdate,
-    submenu_service: SubmenuService = Depends(SubmenuService),
+    submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
-    return await submenu_service.update_submenu(submenu_id, submenu)
+    new_submenu = await submenu_service.update_submenu(submenu_id, submenu)
+    return new_submenu
 
 
 @router.delete(
@@ -76,11 +79,16 @@ async def update_submenu(
     status_code=status.HTTP_200_OK,
 )
 async def delete_submenu(
+    menu_id: UUID,
     submenu_id: UUID,
-    submenu_service: SubmenuService = Depends(SubmenuService),
+    submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
-    del_submenu = await submenu_service.delete_submenu(submenu_id)
-
-    if not del_submenu:
-        return None
-    return {'status': True, 'message': 'The submenu successfully deleted'}
+    return await submenu_service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
+    # if not del_submenu:
+    #     return None
+    # return {'status': True, 'message': 'The submenu successfully deleted'}
+    #
+    # return await submenu_service.delete_submenu(
+    #     menu_id=menu_id,
+    #     submenu_id=submenu_id,
+    # )
