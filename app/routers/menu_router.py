@@ -18,7 +18,7 @@ router = APIRouter(tags=['Menu'], prefix='/api/v1/menus')
 )
 async def get_list_menus(
     menu_service: MenuService = Depends(get_menu_service),
-):
+) -> list[Menu] | list:
     menus_list = await menu_service.get_all_menus()
     return menus_list
 
@@ -31,7 +31,7 @@ async def get_list_menus(
 async def get_menu(
     menu_id: UUID,
     menu_service: MenuService = Depends(get_menu_service),
-):
+) -> Menu | None:
     menu = await menu_service.get_menu(menu_id)
     if not menu:
         raise HTTPException(
@@ -50,7 +50,7 @@ async def get_menu(
 async def create_menu(
     menu: MenuCreateUpdate,
     menu_service: MenuService = Depends(get_menu_service),
-):
+) -> Menu:
     new_menu = await menu_service.create_menu(menu)
     return new_menu
 
@@ -64,7 +64,7 @@ async def update_menu(
     menu_id: UUID,
     menu: MenuCreateUpdate,
     menu_service: MenuService = Depends(get_menu_service),
-):
+) -> Menu:
     return await menu_service.update_menu(menu_id, menu)
 
 
@@ -76,7 +76,7 @@ async def update_menu(
 async def delete_menu(
     menu_id: UUID,
     menu_service: MenuService = Depends(get_menu_service),
-):
+) -> dict | None:
     del_menu = await menu_service.delete_menu(menu_id)
     if not del_menu:
         return None
