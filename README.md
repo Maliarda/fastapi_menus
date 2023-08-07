@@ -24,7 +24,7 @@ cd fastapi_menus
 ### Для запуска проекта используйте команду:
 
 ```
-docker-compose -f docker-compose.yml up --build
+docker-compose -f docker-compose.yaml up --build
 ```
 
 ### Документация будет доступна по адресу:
@@ -34,7 +34,7 @@ docker-compose -f docker-compose.yml up --build
 ### Для запуска тестов используй команду:
 
 ```
-docker-compose -f docker-compose-test.yml up --build
+docker-compose -f docker-compose-for-tests.yml up --build
 ```
 
 ### Остановить контейнеры можно командой:
@@ -61,9 +61,9 @@ cd fastapi_menus
 > DATABASE_URL=postgresql+asyncpg://user:password@host:port/db_name
 > POSTGRES_URL_TEST=postgresql+asyncpg://user:password@host:port/test_db_name
 
-#### где: 
-- user:password - данные для подключения к базе данных, 
-- host:port - имя и порт сервера базы данных, 
+#### где:
+- user:password - данные для подключения к базе данных,
+- host:port - имя и порт сервера базы данных,
 - dbname - название базы данных,
 - test_db_name - название базы данных для тестов
 
@@ -100,7 +100,7 @@ alembic upgrade head
 ### Запустить проект:
 
 ```
-uvicorn app.main:app 
+uvicorn app.main:app
 ```
 ### Запустить тесты можно командой:
 
@@ -110,3 +110,17 @@ python -m pytest -v
 
 ### Документация доступна по адресам:
 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+
+### Установка pre-commit хуков
+```
+pip install pre-commit
+```
+
+```
+pre-commit install
+```
+### Ручная проверка проблем
+```
+pre-commit
+```
