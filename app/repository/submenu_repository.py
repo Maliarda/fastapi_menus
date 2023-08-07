@@ -1,16 +1,14 @@
 from uuid import UUID
 
-from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.db import get_async_session
 from app.models.submenu import Submenu
 from app.schemas.submenu_schemas import SubmenuCreateUpdate
 
 
 class SubmenuRepository:
-    def __init__(self, session: AsyncSession = Depends(get_async_session)):
+    def __init__(self, session: AsyncSession):
         self.session = session
         self.model = Submenu
 
@@ -48,7 +46,8 @@ class SubmenuRepository:
             menu_id: UUID,
     ):
         """Create a new submenu."""
-        new_submenu = Submenu(title=submenu.title, description=submenu.description, menu_id=menu_id)
+        new_submenu = self.model(title=submenu.title, description=submenu.description)
+        new_submenu.menu_id = menu_id
         self.session.add(new_submenu)
         await self.session.commit()
         await self.session.refresh(new_submenu)

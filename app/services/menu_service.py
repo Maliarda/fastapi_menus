@@ -35,9 +35,8 @@ class MenuService:
         return db_menu
 
     async def create_menu(self, menu: MenuCreateUpdate):
+        await self.cache.delete_all()
         new_menu = await self.menu_repository.create_menu(menu=menu)
-        if new_menu:
-            await self.cache.delete('menu_list')
         return new_menu
 
     async def update_menu(self, menu_id: UUID, menu: MenuCreateUpdate):
@@ -54,11 +53,8 @@ class MenuService:
             return None
 
     async def delete_menu(self, menu_id: UUID):
-        db_menu = await self.menu_repository.delete_menu(menu_id=menu_id)
-        if db_menu is None:
-            return None
-        await self.cache.delete(f'menu_{menu_id}')
-        await self.cache.delete('menu_list')
-        await self.cache.delete('submenu_list')
-        await self.cache.delete('dish_list')
-        return {'status': True, 'message': 'The menu successfully deleted'}
+        db_menu = await self.menu_repository.get_menu_by_id(menu_id=menu_id)
+        if db_menu:
+            await self.menu_repository.delete_menu(menu_id=menu_id)
+            await self.cache.delete_all()
+            return {'status': True, 'message': 'The menu successfully deleted'}

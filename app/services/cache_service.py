@@ -30,3 +30,6 @@ class CacheService:
 
     async def delete(self, name):
         return await self.cache.delete(name)
+
+    async def delete_all(self):
+        return await self.cache.flushall()

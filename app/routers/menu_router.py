@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.dependencies import get_menu_service
 from app.schemas.menu_schemas import Menu, MenuCreateUpdate
 from app.services.menu_service import MenuService
-from dependencies import get_menu_service
 
 
 router = APIRouter(tags=['Menu'], prefix='/api/v1/menus')
@@ -19,7 +19,8 @@ router = APIRouter(tags=['Menu'], prefix='/api/v1/menus')
 async def get_list_menus(
     menu_service: MenuService = Depends(get_menu_service),
 ):
-    return await menu_service.get_all_menus()
+    menus_list = await menu_service.get_all_menus()
+    return menus_list
 
 
 @router.get(
@@ -51,9 +52,6 @@ async def create_menu(
     menu_service: MenuService = Depends(get_menu_service),
 ):
     new_menu = await menu_service.create_menu(menu)
-
-    if not new_menu:
-        raise HTTPException(status_code=400, detail='menu already exists')
     return new_menu
 
 

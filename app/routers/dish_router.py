@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.dependencies import get_dish_service
 from app.schemas.dish_schemas import Dish, DishCreateUpdate
 from app.services.dish_service import DishService
-from dependencies import get_dish_service
 
 
 router = APIRouter(
@@ -88,7 +88,7 @@ async def delete_dish(
     dish = await dish_service.delete_dish(menu_id=menu_id,
                                           submenu_id=submenu_id,
                                           dish_id=dish_id)
-    if not dish:
+    if dish is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='dish not found',

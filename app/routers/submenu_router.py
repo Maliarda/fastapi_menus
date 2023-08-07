@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.dependencies import get_submenu_service
 from app.schemas.submenu_schemas import Submenu, SubmenuCreateUpdate
 from app.services.submenu_service import SubmenuService
-from dependencies import get_submenu_service
 
 
 router = APIRouter(
