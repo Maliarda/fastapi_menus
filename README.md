@@ -24,7 +24,7 @@ cd fastapi_menus
 ### Для запуска проекта используйте команду:
 
 ```
-docker-compose -f docker-compose.yml up --build
+docker-compose -f docker-compose.yaml up --build
 ```
 
 ### Документация будет доступна по адресу:
@@ -34,7 +34,7 @@ docker-compose -f docker-compose.yml up --build
 ### Для запуска тестов используй команду:
 
 ```
-docker-compose -f docker-compose-test.yml up --build
+docker-compose -f docker-compose-for-tests.yml up --build
 ```
 
 ### Остановить контейнеры можно командой:
