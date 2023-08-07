@@ -16,23 +16,17 @@ def get_cache(cache=Depends(get_redis)):
     return CacheService(cache)
 
 
-###
-# MENU
-###
 def get_menu_repository(session: AsyncSession = Depends(get_async_session)):
     return MenuRepository(session)
 
 
 def get_menu_service(
-        repository: MenuRepository = Depends(get_menu_repository),
-        cache: CacheService = Depends(get_cache),
+    repository: MenuRepository = Depends(get_menu_repository),
+    cache: CacheService = Depends(get_cache),
 ):
     return MenuService(repository, cache)
 
 
-###
-# SUBMENU
-###
 def get_submenu_repository(session: AsyncSession = Depends(get_async_session)):
     return SubmenuRepository(session)
 
@@ -44,10 +38,9 @@ def get_submenu_service(
     return SubmenuService(repository, cache)
 
 
-###
-# DISHES
-###
-async def get_dish_repository(session: AsyncSession = Depends(get_async_session)):
+async def get_dish_repository(
+    session: AsyncSession = Depends(get_async_session),
+):
     return DishRepository(session)
 
 

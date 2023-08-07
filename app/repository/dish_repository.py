@@ -49,13 +49,13 @@ class DishRepository:
         await self.session.refresh(new_dish)
         return new_dish
 
-    async def delete_dish(self, dish_id: UUID):
+    async def delete_dish(self, dish_id: UUID) -> None:
         """Delete dish."""
         del_dish = await self.get_dish_by_id(dish_id=dish_id)
         await self.session.delete(del_dish)
         await self.session.commit()
 
-    async def update_dish(self, dish_id: UUID, dish: DishCreateUpdate):
+    async def update_dish(self, dish_id: UUID, dish: DishCreateUpdate) -> Dish | None:
         """Update dish."""
         upd_dish = await self.get_dish_by_id(dish_id=dish_id)
         upd_dish_data = dish.dict(exclude_unset=True)

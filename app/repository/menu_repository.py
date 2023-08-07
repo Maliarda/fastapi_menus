@@ -12,7 +12,7 @@ class MenuRepository:
         self.session = session
         self.model = Menu
 
-    async def get_menu_by_id(self, menu_id: UUID):
+    async def get_menu_by_id(self, menu_id: UUID) -> Menu:
         """Get menu by id"""
         return (
             await self.session.execute(
@@ -20,15 +20,7 @@ class MenuRepository:
             )
         ).scalar()
 
-    async def get_menu_by_title(self, menu_title: str):
-        """Get menu by title."""
-        return (
-            await self.session.execute(
-                select(self.model).where(self.model.title == menu_title),
-            )
-        ).scalar()
-
-    async def get_menus(self):
+    async def get_menus(self) -> list[Menu]:
         """Get menus list."""
         return (await self.session.execute(select(self.model))).scalars().fetchall()
 
@@ -40,13 +32,13 @@ class MenuRepository:
         await self.session.refresh(new_menu)
         return new_menu
 
-    async def delete_menu(self, menu_id: UUID):
+    async def delete_menu(self, menu_id: UUID) -> None:
         """Delete menu item"""
         del_menu = await self.get_menu_by_id(menu_id=menu_id)
         await self.session.delete(del_menu)
         await self.session.commit()
 
-    async def update_menu(self, menu_id: UUID, menu: MenuCreateUpdate):
+    async def update_menu(self, menu_id: UUID, menu: MenuCreateUpdate) -> Menu:
         """Update menu item"""
         upd_menu = await self.get_menu_by_id(menu_id=menu_id)
         upd_menu_data = menu.dict(exclude_unset=True)

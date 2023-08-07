@@ -20,15 +20,7 @@ class SubmenuRepository:
             )
         ).scalar()
 
-    # async def get_submenu_by_title(self, submenu_title: UUID):
-    #     """Get submenu by title."""
-    #     return (
-    #         await self.session.execute(
-    #             select(self.model).where(self.model.title == submenu_title),
-    #         )
-    #     ).scalar()
-
-    async def get_submenus(self, menu_id: UUID):
+    async def get_submenus(self, menu_id: UUID) -> list[Submenu]:
         """Get submenus list."""
         return (
             (
@@ -44,7 +36,7 @@ class SubmenuRepository:
             self,
             submenu: SubmenuCreateUpdate,
             menu_id: UUID,
-    ):
+    ) -> Submenu:
         """Create a new submenu."""
         new_submenu = self.model(title=submenu.title, description=submenu.description)
         new_submenu.menu_id = menu_id
@@ -53,7 +45,7 @@ class SubmenuRepository:
         await self.session.refresh(new_submenu)
         return new_submenu
 
-    async def delete_submenu(self, submenu_id: UUID):
+    async def delete_submenu(self, submenu_id: UUID) -> bool:
         """Delete submenu."""
         del_submenu = await self.get_submenu_by_id(submenu_id=submenu_id)
         if del_submenu:
@@ -66,7 +58,7 @@ class SubmenuRepository:
             self,
             submenu_id: UUID,
             submenu: SubmenuCreateUpdate,
-    ):
+    ) -> Submenu:
         """Update submenu."""
         upd_submenu = await self.get_submenu_by_id(submenu_id=submenu_id)
         upd_submenu_data = submenu.dict(exclude_unset=True)

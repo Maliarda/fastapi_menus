@@ -22,7 +22,7 @@ router = APIRouter(
 async def get_list_submenus(
     menu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-):
+) -> list[Submenu | None]:
     return await submenu_service.get_all_submenus(menu_id)
 
 
@@ -34,7 +34,7 @@ async def get_list_submenus(
 async def get_submenu(
     submenu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-):
+) -> Submenu | None:
     submenu = await submenu_service.get_submenu(submenu_id)
 
     if not submenu:
@@ -54,7 +54,7 @@ async def create_submenu(
     menu_id: UUID,
     submenu: SubmenuCreateUpdate,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-):
+) -> Submenu:
     new_submenu = await submenu_service.create_submenu(menu_id=menu_id, submenu=submenu)
     return new_submenu
 
@@ -68,7 +68,7 @@ async def update_submenu(
     submenu_id: UUID,
     submenu: SubmenuCreateUpdate,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-):
+) -> Submenu:
     new_submenu = await submenu_service.update_submenu(submenu_id, submenu)
     return new_submenu
 
@@ -82,13 +82,5 @@ async def delete_submenu(
     menu_id: UUID,
     submenu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-):
+) -> None:
     return await submenu_service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
-    # if not del_submenu:
-    #     return None
-    # return {'status': True, 'message': 'The submenu successfully deleted'}
-    #
-    # return await submenu_service.delete_submenu(
-    #     menu_id=menu_id,
-    #     submenu_id=submenu_id,
-    # )

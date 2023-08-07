@@ -17,12 +17,15 @@ router = APIRouter(
     '/',
     response_model=list[Dish],
     response_model_exclude_none=True,
+    summary='Get lists of dishes',
+    response_description='Dishes list',
     status_code=status.HTTP_200_OK,
 )
 async def get_list_dishes(
         submenu_id: UUID,
         dish_service: DishService = Depends(get_dish_service),
-):
+) -> list[Dish | None]:
+    """Get list of all dishes."""
     return await dish_service.get_all_dishes(submenu_id=submenu_id)
 
 
@@ -34,7 +37,7 @@ async def get_list_dishes(
 async def get_dish(
         dish_id: UUID,
         dish_service: DishService = Depends(get_dish_service),
-):
+) -> Dish | None:
     dish = await dish_service.get_dish(dish_id=dish_id)
 
     if not dish:
@@ -55,7 +58,7 @@ async def create_dish(
         submenu_id: UUID,
         dish: DishCreateUpdate,
         dish_service: DishService = Depends(get_dish_service),
-):
+) -> Dish:
     new_dish = await dish_service.create_dish(menu_id, submenu_id, dish)
     return new_dish
 
@@ -69,7 +72,7 @@ async def update_dish(
         dish_id: UUID,
         dish: DishCreateUpdate,
         dish_service: DishService = Depends(get_dish_service),
-):
+) -> Dish:
     upd_dish = await dish_service.update_dish(dish_id, dish)
     return upd_dish
 
@@ -84,7 +87,7 @@ async def delete_dish(
         submenu_id: UUID,
         dish_id: UUID,
         dish_service: DishService = Depends(get_dish_service),
-):
+) -> Dish | None:
     dish = await dish_service.delete_dish(menu_id=menu_id,
                                           submenu_id=submenu_id,
                                           dish_id=dish_id)
