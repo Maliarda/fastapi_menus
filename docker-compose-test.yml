@@ -13,7 +13,7 @@ services:
     depends_on:
       test_db:
         condition: service_healthy
-    command: sh -c "alembic upgrade head && python -m pytest -v"
+    command: sh -c "alembic upgrade head && python -m pytest -v && tail -f /dev/null"
 
 
   test_db:
@@ -21,7 +21,7 @@ services:
     container_name: testapp-db
     restart: always
     ports:
-      - 5433:5432
+      - 9002:5432
     env_file:
       - .docker.env
     healthcheck:
@@ -31,20 +31,6 @@ services:
       retries: 20
     volumes:
       - test_db:/var/lib/postgresql/data
-
-  cache:
-    container_name: cache
-    image: redis:latest
-    env_file:
-      - .docker.env
-    ports:
-      - 6379:6379
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
 
 volumes:
   test_db:
