@@ -60,10 +60,12 @@ cd fastapi_menus
 
 > DATABASE_URL=postgresql+asyncpg://user:password@host:port/db_name
 > POSTGRES_URL_TEST=postgresql+asyncpg://user:password@host:port/test_db_name
+> REDIS_EXPIRE=3600
+> REDIS_URL=redis://:password@localhost:port
 
 #### где:
-- user:password - данные для подключения к базе данных,
-- host:port - имя и порт сервера базы данных,
+- user:password - данные для подключения к соответствующей базе данных,
+- host:port - имя и порт сервера соответствующей базы данных,
 - dbname - название базы данных,
 - test_db_name - название базы данных для тестов
 
