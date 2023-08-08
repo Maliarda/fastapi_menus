@@ -13,8 +13,8 @@ class CacheService:
         data = [value.__dict__ for value in data]
         for value in data:
             value.pop('_sa_instance_state', None)
-        data = json.dumps(jsonable_encoder(data))
-        set_cache = await self.cache.set(list_name, data)
+        data_j = json.dumps(jsonable_encoder(data))
+        set_cache = await self.cache.set(list_name, data_j)
         await self.cache.expire(list_name, settings.redis_expire)
         return set_cache
 

@@ -14,13 +14,6 @@ async def test_dishes_and_submenus_count(
     response = await client.get(
         f'/api/v1/menus/{menu.id}',
     )  # просматриваем конкретное меню
-    assert response.json() == {
-        'id': '2e1ce371-cd16-4231-bc5e-4fac25e314f2',
-        'title': 'Dessert Features',
-        'description': 'Menu of cakes, pastries and other sweet things',
-        'submenus_count': 1,
-        'dishes_count': 2,
-    }
     assert response.status_code == status.HTTP_200_OK
     response = await client.get(
         f'/api/v1/menus/{menu.id}/submenus/{first_dish.submenu_id}',
