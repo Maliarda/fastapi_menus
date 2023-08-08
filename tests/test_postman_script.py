@@ -2,15 +2,15 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from factories import DishFactory, MenuFactory
+from factories import DishFactory, MenuFactory, SubmenuFactory
 
 
 @pytest.mark.anyio
 async def test_dishes_and_submenus_count(
     client: AsyncClient,
-    two_dishes: tuple[DishFactory, DishFactory, MenuFactory],
+    two_dishes: tuple[DishFactory, DishFactory, MenuFactory, SubmenuFactory],
 ):
-    first_dish, second_dish, menu = two_dishes
+    first_dish, second_dish, menu, submenu = two_dishes
     response = await client.get(
         f'/api/v1/menus/{menu.id}',
     )  # просматриваем конкретное меню
