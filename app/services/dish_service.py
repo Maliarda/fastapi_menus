@@ -55,8 +55,9 @@ class DishService:
                 dish_id=dish_id,
                 dish=dish,
             )
-            await self.cache.set(f"dish_{dish_id}", upd_dish)
             await self.cache.delete("dish_list")
+            await self.cache.delete(f"dish_{dish_id}")
+            await self.cache.set(f"dish_{dish_id}", upd_dish)
             return upd_dish
 
     async def delete_dish(self, dish_id: UUID, menu_id: UUID, submenu_id: UUID):
