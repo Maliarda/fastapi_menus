@@ -35,7 +35,7 @@ class MenuService:
         return db_menu
 
     async def create_menu(self, menu: MenuCreateUpdate):
-        await self.cache.delete_all()
+        await self.cache.delete("menu_list")
         new_menu = await self.menu_repository.create_menu(menu=menu)
         return new_menu
 
@@ -57,4 +57,6 @@ class MenuService:
         if db_menu:
             await self.menu_repository.delete_menu(menu_id=menu_id)
             await self.cache.delete_all()
+            await self.cache.delete(f"menu_{menu_id}")
+            await self.cache.delete("menu_list")
             return {'status': True, 'message': 'The menu successfully deleted'}

@@ -9,7 +9,6 @@ from app.core.config import settings
 from app.core.db import Base, get_async_session
 from app.main import app
 
-
 test_engine = create_async_engine(
     settings.postgres_url_test,
     future=True,
@@ -36,6 +35,14 @@ async def override_db():
         yield session
 
 
+@pytest.fixture(scope="session")
+async def client():
+    app.dependency_overrides = {get_async_session: override_db}
+    async with AsyncClient(app=app, base_url='http://test') as client:
+        print("Client is ready")
+        yield client
+
+
 @pytest.fixture(autouse=True, scope='function')
 async def init_db():
     async with test_engine.begin() as conn:
@@ -43,13 +50,6 @@ async def init_db():
     yield
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-
-
-@pytest.fixture
-async def client():
-    app.dependency_overrides = {get_async_session: override_db}
-    async with AsyncClient(app=app, base_url='http://test') as client:
-        yield client
 
 
 @pytest.fixture(scope='function')
@@ -85,4 +85,4 @@ async def two_dishes():
         description='Eat like an emperor',
         price='2.56',
     )
-    yield first_dish, second_dish, menu
+    yield first_dish, second_dish, menu, submenu

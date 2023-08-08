@@ -46,7 +46,9 @@ class SubmenuService:
             menu_id=menu_id,
         )
         if new_submenu:
-            await self.cache.delete_all()
+            await self.cache.delete(f"menu_{menu_id}")
+            await self.cache.delete("submenu_list")
+            await self.cache.delete("menu_list")
         return new_submenu
 
     async def update_submenu(
@@ -74,5 +76,9 @@ class SubmenuService:
         )
         if db_submenu:
             await self.submenu_repository.delete_submenu(submenu_id=submenu_id)
-            await self.cache.delete_all()
+            await self.cache.delete(f"menu_{menu_id}")
+            await self.cache.delete(f"submenu_{submenu_id}")
+            await self.cache.delete("menu_list")
+            await self.cache.delete("submenu_list")
+            await self.cache.delete("dish_list")
             return {'status': True, 'message': 'The submenu successfully deleted'}

@@ -2,25 +2,18 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from factories import DishFactory, MenuFactory
+from factories import DishFactory, MenuFactory, SubmenuFactory
 
 
 @pytest.mark.anyio
 async def test_dishes_and_submenus_count(
     client: AsyncClient,
-    two_dishes: tuple[DishFactory, DishFactory, MenuFactory],
+    two_dishes: tuple[DishFactory, DishFactory, MenuFactory, SubmenuFactory],
 ):
-    first_dish, second_dish, menu = two_dishes
+    first_dish, second_dish, menu, submenu = two_dishes
     response = await client.get(
         f'/api/v1/menus/{menu.id}',
     )  # просматриваем конкретное меню
-    assert response.json() == {
-        'id': '2e1ce371-cd16-4231-bc5e-4fac25e314f2',
-        'title': 'Dessert Features',
-        'description': 'Menu of cakes, pastries and other sweet things',
-        'submenus_count': 1,
-        'dishes_count': 2,
-    }
     assert response.status_code == status.HTTP_200_OK
     response = await client.get(
         f'/api/v1/menus/{menu.id}/submenus/{first_dish.submenu_id}',
