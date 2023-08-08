@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 
 class Menu(BaseModel):
+    """A Pydantic model representing a menu entity."""
+
     id: UUID
     title: str
     description: str
@@ -24,6 +26,8 @@ class Menu(BaseModel):
 
 
 class MenuCreateUpdate(BaseModel):
+    """A Pydantic model representing the data for creating or updating a menu."""
+
     title: str
     description: str
 

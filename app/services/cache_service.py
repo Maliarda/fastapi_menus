@@ -6,7 +6,9 @@ from app.core.config import settings
 
 
 class CacheService:
-    def __init__(self, cache):
+    """A service class for interacting with a caching mechanism."""
+
+    def __init__(self, cache) -> None:
         self.cache = cache
 
     async def set_list(self, list_name, data):
@@ -30,6 +32,3 @@ class CacheService:
 
     async def delete(self, name):
         return await self.cache.delete(name)
-
-    async def delete_all(self):
-        return await self.cache.flushall()

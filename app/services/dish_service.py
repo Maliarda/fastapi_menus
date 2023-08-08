@@ -7,9 +7,9 @@ from app.services.cache_service import CacheService
 
 class DishService:
     def __init__(
-            self,
-            dish_repository: DishRepository,
-            cache: CacheService,
+        self,
+        dish_repository: DishRepository,
+        cache: CacheService,
     ):
         self.dish_repository = dish_repository
         self.cache = cache
@@ -19,7 +19,9 @@ class DishService:
         if cached_list:
             dishes = cached_list
         else:
-            dishes = await self.dish_repository.get_list_dishes(submenu_id=submenu_id)
+            dishes = await self.dish_repository.get_list_dishes(
+                submenu_id=submenu_id,
+            )
             await self.cache.set_list('dish_list', dishes)
         return dishes
 
@@ -28,24 +30,30 @@ class DishService:
         if cached_dish:
             db_dish = cached_dish
         else:
-            db_dish = await self.dish_repository.get_dish_by_id(dish_id=dish_id)
+            db_dish = await self.dish_repository.get_dish_by_id(
+                dish_id=dish_id,
+            )
             if db_dish is None:
                 return None
             await self.cache.set(f'dish_{dish_id}', db_dish)
         return db_dish
 
     async def create_dish(
-            self,
-            menu_id: UUID,
-            submenu_id: UUID,
-            dish: DishCreateUpdate,
+        self,
+        menu_id: UUID,
+        submenu_id: UUID,
+        dish: DishCreateUpdate,
     ):
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete(f"submenu_{submenu_id}")
-        await self.cache.delete("menu_list")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("dish_list")
-        new_dish = await self.dish_repository.create_dish(dish=dish, menu_id=menu_id, submenu_id=submenu_id)
+        await self.cache.delete(f'menu_{menu_id}')
+        await self.cache.delete(f'submenu_{submenu_id}')
+        await self.cache.delete('menu_list')
+        await self.cache.delete('submenu_list')
+        await self.cache.delete('dish_list')
+        new_dish = await self.dish_repository.create_dish(
+            dish=dish,
+            menu_id=menu_id,
+            submenu_id=submenu_id,
+        )
         return new_dish
 
     async def update_dish(self, dish_id: UUID, dish: DishCreateUpdate):
@@ -55,20 +63,25 @@ class DishService:
                 dish_id=dish_id,
                 dish=dish,
             )
-            await self.cache.delete("dish_list")
-            await self.cache.delete(f"dish_{dish_id}")
-            await self.cache.set(f"dish_{dish_id}", upd_dish)
+            await self.cache.delete('dish_list')
+            await self.cache.delete(f'dish_{dish_id}')
+            await self.cache.set(f'dish_{dish_id}', upd_dish)
             return upd_dish
 
-    async def delete_dish(self, dish_id: UUID, menu_id: UUID, submenu_id: UUID):
+    async def delete_dish(
+        self,
+        dish_id: UUID,
+        menu_id: UUID,
+        submenu_id: UUID,
+    ) -> dict | None:
         db_dish = await self.dish_repository.get_dish_by_id(dish_id=dish_id)
         if db_dish is None:
             return None
         await self.dish_repository.delete_dish(dish_id=dish_id)
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete(f"submenu_{submenu_id}")
-        await self.cache.delete(f"dish_{dish_id}")
-        await self.cache.delete("menu_list")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("dish_list")
+        await self.cache.delete(f'menu_{menu_id}')
+        await self.cache.delete(f'submenu_{submenu_id}')
+        await self.cache.delete(f'dish_{dish_id}')
+        await self.cache.delete('menu_list')
+        await self.cache.delete('submenu_list')
+        await self.cache.delete('dish_list')
         return {'status': True, 'message': 'The dish successfully deleted'}

@@ -38,6 +38,7 @@ async def get_dish(
         dish_id: UUID,
         dish_service: DishService = Depends(get_dish_service),
 ) -> Dish | None:
+    """Get details of a specific dish."""
     dish = await dish_service.get_dish(dish_id=dish_id)
 
     if not dish:
@@ -59,6 +60,7 @@ async def create_dish(
         dish: DishCreateUpdate,
         dish_service: DishService = Depends(get_dish_service),
 ) -> Dish:
+    """Create a new dish."""
     new_dish = await dish_service.create_dish(menu_id, submenu_id, dish)
     return new_dish
 
@@ -73,6 +75,7 @@ async def update_dish(
         dish: DishCreateUpdate,
         dish_service: DishService = Depends(get_dish_service),
 ) -> Dish:
+    """Update details of an existing dish."""
     upd_dish = await dish_service.update_dish(dish_id, dish)
     return upd_dish
 
@@ -87,7 +90,9 @@ async def delete_dish(
         submenu_id: UUID,
         dish_id: UUID,
         dish_service: DishService = Depends(get_dish_service),
-) -> Dish | None:
+) -> dict | None:
+    """Delete a dish."""
+
     dish = await dish_service.delete_dish(menu_id=menu_id,
                                           submenu_id=submenu_id,
                                           dish_id=dish_id)

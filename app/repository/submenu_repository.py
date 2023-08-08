@@ -8,7 +8,9 @@ from app.schemas.submenu_schemas import SubmenuCreateUpdate
 
 
 class SubmenuRepository:
-    def __init__(self, session: AsyncSession):
+    """A repository class for accessing submenu data."""
+
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         self.model = Submenu
 

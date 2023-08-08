@@ -22,7 +22,8 @@ router = APIRouter(
 async def get_list_submenus(
     menu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-) -> list[Submenu | None]:
+) -> list[Submenu] | list:
+    """Get list of all submenus."""
     return await submenu_service.get_all_submenus(menu_id)
 
 
@@ -35,6 +36,7 @@ async def get_submenu(
     submenu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
 ) -> Submenu | None:
+    """Get details of a specific submenu."""
     submenu = await submenu_service.get_submenu(submenu_id)
 
     if not submenu:
@@ -54,7 +56,8 @@ async def create_submenu(
     menu_id: UUID,
     submenu: SubmenuCreateUpdate,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-) -> Submenu:
+):
+    """Create a new submenu."""
     new_submenu = await submenu_service.create_submenu(menu_id=menu_id, submenu=submenu)
     return new_submenu
 
@@ -68,9 +71,10 @@ async def update_submenu(
     submenu_id: UUID,
     submenu: SubmenuCreateUpdate,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-) -> Submenu:
-    new_submenu = await submenu_service.update_submenu(submenu_id, submenu)
-    return new_submenu
+):
+    """Update details of an existing submenu."""
+    upd_submenu = await submenu_service.update_submenu(submenu_id, submenu)
+    return upd_submenu
 
 
 @router.delete(
@@ -82,5 +86,12 @@ async def delete_submenu(
     menu_id: UUID,
     submenu_id: UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
-) -> None:
-    return await submenu_service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
+) -> dict | None:
+    """Delete a submenu."""
+    submenu = await submenu_service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
+    if submenu is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='submenu not found',
+        )
+    return submenu

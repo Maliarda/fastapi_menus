@@ -8,11 +8,13 @@ from app.schemas.dish_schemas import DishCreateUpdate
 
 
 class DishRepository:
-    def __init__(self, session: AsyncSession):
+    """A repository class for accessing dish data."""
+
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         self.model = Dish
 
-    async def get_dish_by_id(self, dish_id: UUID) -> Dish | None:
+    async def get_dish_by_id(self, dish_id: UUID) -> Dish:
         """Get dish by id."""
         return (
             await self.session.execute(
@@ -22,7 +24,7 @@ class DishRepository:
 
     async def get_list_dishes(
             self, submenu_id: UUID,
-    ) -> list[Dish] | None:
+    ) -> list[Dish]:
         """Get dishes list."""
         return (
             (
@@ -55,7 +57,7 @@ class DishRepository:
         await self.session.delete(del_dish)
         await self.session.commit()
 
-    async def update_dish(self, dish_id: UUID, dish: DishCreateUpdate) -> Dish | None:
+    async def update_dish(self, dish_id: UUID, dish: DishCreateUpdate) -> Dish:
         """Update dish."""
         upd_dish = await self.get_dish_by_id(dish_id=dish_id)
         upd_dish_data = dish.dict(exclude_unset=True)

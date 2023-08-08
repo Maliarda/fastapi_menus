@@ -8,6 +8,8 @@ from app.core.db import Base
 
 
 class Dish(Base):
+    """Dish model."""
+
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,

@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 
 class Submenu(BaseModel):
+    """A Pydantic model representing a submenu entity."""
+
     id: UUID
     title: str
     description: str
@@ -22,6 +24,8 @@ class Submenu(BaseModel):
 
 
 class SubmenuCreateUpdate(BaseModel):
+    """A Pydantic model representing the data for creating or updating a submenu."""
+
     title: str
     description: str
 

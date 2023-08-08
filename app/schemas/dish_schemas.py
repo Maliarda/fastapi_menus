@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 
 class Dish(BaseModel):
+    """A Pydantic model representing a dish entity."""
+
     id: UUID
     title: str
     description: str
@@ -22,6 +24,8 @@ class Dish(BaseModel):
 
 
 class DishCreateUpdate(BaseModel):
+    """A Pydantic model representing the data for creating or updating a dish."""
+
     title: str
     description: str
     price: str

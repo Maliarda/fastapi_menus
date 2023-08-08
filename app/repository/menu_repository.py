@@ -8,7 +8,9 @@ from app.schemas.menu_schemas import MenuCreateUpdate
 
 
 class MenuRepository:
-    def __init__(self, session: AsyncSession):
+    """A repository class for accessing menu data."""
+
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         self.model = Menu
 

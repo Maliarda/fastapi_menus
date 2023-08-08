@@ -10,6 +10,8 @@ from app.models.submenu import Submenu
 
 
 class Menu(Base):
+    """Menu model."""
+
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,
