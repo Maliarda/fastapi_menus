@@ -2,6 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.schemas.dish_schemas import Dish
+
 
 class Submenu(BaseModel):
     """A Pydantic model representing a submenu entity."""
@@ -37,3 +39,13 @@ class SubmenuCreateUpdate(BaseModel):
                 'description': 'heavenly pleasure',
             },
         }
+
+
+class SubmenusList(SubmenuCreateUpdate):
+    """A Pydantic model representing the data for submenu with list of dishes."""
+
+    id: UUID
+    dish: list[Dish]
+
+    class Config:
+        orm_mode = True

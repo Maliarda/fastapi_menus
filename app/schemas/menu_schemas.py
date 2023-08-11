@@ -2,6 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.schemas.submenu_schemas import Submenu
+
 
 class Menu(BaseModel):
     """A Pydantic model representing a menu entity."""
@@ -39,3 +41,10 @@ class MenuCreateUpdate(BaseModel):
                 'description': 'Main menu description',
             },
         }
+
+
+class MenusAll(MenuCreateUpdate):
+    """A Pydantic model representing the data for menu with list of submenus."""
+
+    id: UUID
+    submenu: list[Submenu]

@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies import get_menu_service
-from app.schemas.menu_schemas import Menu, MenuCreateUpdate
+from app.schemas.menu_schemas import Menu, MenuCreateUpdate, MenusAll
 from app.services.menu_service import MenuService
 
 
@@ -87,3 +87,16 @@ async def delete_menu(
     if not del_menu:
         return None
     return {'status': True, 'message': 'The menu successfully deleted'}
+
+
+@router.get(
+    '/all/',
+    response_model=list[MenusAll],
+    status_code=status.HTTP_200_OK,
+)
+async def get_list_menus_with_all(
+    menu_service: MenuService = Depends(get_menu_service),
+) -> list[MenusAll]:
+    """Get list of all menus with all submenus and all dishes."""
+    menus_list = await menu_service.get_all_menus_with_content()
+    return menus_list

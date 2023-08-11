@@ -8,9 +8,9 @@ from app.services.cache_service import CacheService
 
 class MenuService:
     def __init__(
-        self,
-        menu_repository: MenuRepository,
-        cache: CacheService,
+            self,
+            menu_repository: MenuRepository,
+            cache: CacheService,
     ):
         self.menu_repository = menu_repository
         self.cache = cache
@@ -63,3 +63,12 @@ class MenuService:
             await self.cache.delete('menu_list')
             return {'status': True, 'message': 'The menu successfully deleted'}
         return None
+
+    async def get_all_menus_with_content(self) -> list:
+        cached_list = await self.cache.get('all_menu_list')
+        if cached_list:
+            menus = cached_list
+        else:
+            menus = await self.menu_repository.get_menus_with_submenus_and_dishes()
+            await self.cache.set_list('all_menu_list', menus)
+        return menus

@@ -2,8 +2,10 @@ from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.menu import Menu
+from app.models.submenu import Submenu
 from app.schemas.menu_schemas import MenuCreateUpdate
 
 
@@ -24,7 +26,11 @@ class MenuRepository:
 
     async def get_menus(self) -> list[Menu]:
         """Get menus list."""
-        return (await self.session.execute(select(self.model))).scalars().fetchall()
+        return (
+            (await self.session.execute(select(self.model)))
+            .scalars()
+            .fetchall()
+        )
 
     async def create_menu(self, menu: MenuCreateUpdate):
         """Create a new menu."""
@@ -49,3 +55,12 @@ class MenuRepository:
         await self.session.commit()
         await self.session.refresh(upd_menu)
         return upd_menu
+
+    async def get_menus_with_submenus_and_dishes(self):
+        """Get menus list with submenus and dishes."""
+        query = select(self.model).options(
+            selectinload(Menu.submenu).selectinload(Submenu.dish),
+        )
+        result = await self.session.execute(query)
+        menus = result.scalars().all()
+        return menus
